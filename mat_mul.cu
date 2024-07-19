@@ -30,9 +30,9 @@ int main(void) {
     double *h_C = (double *)malloc(size);
 
     // Initialize host matrices
-    for (long int i = 0; i < width * width; i++) {
-        h_A[i] = 1.0f;
-        h_B[i] = 2.0f;
+    for (int i = 0; i < width * width; i++) {
+        h_A[i] = 1.0;
+        h_B[i] = 2.0;
     }
 
     // Allocate memory for device matrices
