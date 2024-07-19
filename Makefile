@@ -9,3 +9,6 @@ vec: vector
 
 vector: vector.cu
 	nvcc $< -o $@
+
+clean:
+	rm mm vector
