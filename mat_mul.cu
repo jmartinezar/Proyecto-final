@@ -57,7 +57,7 @@ int main(void) {
 
     // Print a few elements of the result matrix
     for (int i = 0; i < 10; i++) {
-        printf("C[%d] = %f\n", i, h_C[i]);
+        printf("C[%d] = %f\n", i, h_C[i*width]);
     }
 
     // Free device memory
