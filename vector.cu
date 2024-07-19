@@ -2,7 +2,7 @@
 #include <cuda_runtime.h>
 
 // CUDA kernel to perform vector addition
-__global__ void vectorAdd(const float *A, const float *B, float *C, int n) {
+__global__ void vectorAdd(const double *A, const double *B, double *C, int n) {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
     if (i < n) {
         C[i] = A[i] + B[i];
@@ -12,12 +12,12 @@ __global__ void vectorAdd(const float *A, const float *B, float *C, int n) {
 int main(void) {
     // Size of vectors
     int n = 1000000;
-    size_t size = n * sizeof(float);
+    size_t size = n * sizeof(double);
 
     // Allocate memory for host vectors
-    float *h_A = (float *)malloc(size);
-    float *h_B = (float *)malloc(size);
-    float *h_C = (float *)malloc(size);
+    double *h_A = (double *)malloc(size);
+    double *h_B = (double *)malloc(size);
+    double *h_C = (double *)malloc(size);
 
     // Initialize host vectors
     for (int i = 0; i < n; i++) {
@@ -26,7 +26,7 @@ int main(void) {
     }
 
     // Allocate memory for device vectors
-    float *d_A, *d_B, *d_C;
+    double *d_A, *d_B, *d_C;
     cudaMalloc((void **)&d_A, size);
     cudaMalloc((void **)&d_B, size);
     cudaMalloc((void **)&d_C, size);

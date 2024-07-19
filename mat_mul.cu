@@ -4,14 +4,14 @@
 #define TILE_SIZE 16
 
 // CUDA kernel for matrix multiplication
-__global__ void matrixMul(const float *A, const float *B, float *C, int width) {
+__global__ void matrixMul(const double *A, const double *B, double *C, int width) {
     // Calculate row and column index of the element
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     // Compute the element of the product matrix
     if (row < width && col < width) {
-        float value = 0;
+        double value = 0;
         for (int k = 0; k < width; ++k) {
             value += A[row * width + k] * B[k * width + col];
         }
@@ -22,12 +22,12 @@ __global__ void matrixMul(const float *A, const float *B, float *C, int width) {
 int main(void) {
     // Size of the matrices (assuming square matrices for simplicity)
     int width = 1024;
-    size_t size = width * width * sizeof(float);
+    size_t size = width * width * sizeof(double);
 
     // Allocate memory for host matrices
-    float *h_A = (float *)malloc(size);
-    float *h_B = (float *)malloc(size);
-    float *h_C = (float *)malloc(size);
+    double *h_A = (double *)malloc(size);
+    double *h_B = (double *)malloc(size);
+    double *h_C = (double *)malloc(size);
 
     // Initialize host matrices
     for (int i = 0; i < width * width; i++) {
@@ -36,7 +36,7 @@ int main(void) {
     }
 
     // Allocate memory for device matrices
-    float *d_A, *d_B, *d_C;
+    double *d_A, *d_B, *d_C;
     cudaMalloc((void **)&d_A, size);
     cudaMalloc((void **)&d_B, size);
     cudaMalloc((void **)&d_C, size);
