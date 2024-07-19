@@ -30,7 +30,7 @@ int main(void) {
     double *h_C = (double *)malloc(size);
 
     // Initialize host matrices
-    for (int i = 0; i < width * width; i++) {
+    for (long int i = 0; i < width * width; i++) {
         h_A[i] = 1.0f;
         h_B[i] = 2.0f;
     }
