@@ -21,7 +21,7 @@ __global__ void matrixMul(const double *A, const double *B, double *C, int width
 
 int main(void) {
     // Size of the matrices (assuming square matrices for simplicity)
-    int width = 100000000;
+    int width = 1000000;
     size_t size = width * width * sizeof(double);
 
     // Allocate memory for host matrices
