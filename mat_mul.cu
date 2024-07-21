@@ -7,7 +7,7 @@ __global__ void matrixMul(const double *A, const double *B, double *C, int width
 {
 	if(width_A != high_B)
 	{
-		std::cout << "The size of matrices isn't correct\n";
+		printf("The size of matrices isn't correct\n");
 		return;
 	}
 
@@ -61,7 +61,7 @@ int main(void)
     dim3 dimBlock(TILE_SIZE, TILE_SIZE);
     dim3 dimGrid((width_B + dimBlock.x - 1) / dimBlock.x, (high_A + dimBlock.y - 1) / dimBlock.y);
 
-    matrixMul<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, width);
+    matrixMul<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, width_A, high_A, width_B, high_B);
 
     cudaMemcpy(h_C, d_C, size_C, cudaMemcpyDeviceToHost);
 
