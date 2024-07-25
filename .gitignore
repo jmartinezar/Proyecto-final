@@ -1,0 +1,13 @@
+# those are ignored to avoid data overwriting when pushing from remote to local
+# local data
+data/*
+!data/.gitkeep
+# local logs
+logs/*
+!logs/.gitkeep
+# local figures
+figs/*
+!figs/.gitkeep
+
+# executables
+*.x
