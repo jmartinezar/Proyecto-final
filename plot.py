@@ -41,5 +41,5 @@ ax2.plot(data_vector[:,0], data_vector[:,1], marker = 'o', color = '#f4a40a')
 plt.tight_layout()
 plt.savefig("figs/vector-strong.pdf")
 
-# plot both at once
-plt.show()
+# plot both at once (not useful in server)
+# plt.show()

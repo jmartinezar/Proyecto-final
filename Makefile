@@ -31,6 +31,7 @@ data: vector-times matmul-times
 
 plot: plot.py data
 	python3 $<
+	@echo "Figures should be created in figs/, if not, check logs from python3 execution"
 
 execs-clean:
 	rm *.x
