@@ -24,7 +24,7 @@ ax2.set_yscale('log')
 # ax2.set_xscale('log')
 ax2.plot(data_matmul[:,0], data_matmul[:,1], marker = 'o', mfc = 'none', mew = 1.0, ms = 7.5, lw = 1.2, c = logcolor)
 plt.tight_layout()
-plt.savefig("figs/matmul-weak.pdf")
+plt.savefig("figs/matmul-strong.pdf")
 
 # vector
 fig, ax = plt.subplots(sharey = True, figsize = (6,5))
@@ -39,6 +39,7 @@ ax2.set_xlabel('Vector size (logscale)', size=13, color = '#f4a40a')
 ax2.set_xscale('log')
 ax2.plot(data_vector[:,0], data_vector[:,1], marker = 'o', color = '#f4a40a')
 plt.tight_layout()
-plt.savefig("figs/vector-weak.pdf")
+plt.savefig("figs/vector-strong.pdf")
 
-plt.show() # plot both at once
+# plot both at once
+plt.show()
