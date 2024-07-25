@@ -34,5 +34,8 @@ data: vector-times matmul-times
 plot: plot.py data
 	python $<
 
+execs-clean:
+	rm *.x
+
 clean:
-	rm data/* logs/* *.x
+	rm figs/*.pdf data/*.txt logs/*.log *.x
