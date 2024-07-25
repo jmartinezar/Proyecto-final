@@ -5,7 +5,7 @@ SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
 header=size\ttime(s)
 
-all: data
+all: plot
 
 matmul.x: mat_mul.cu
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
@@ -29,10 +29,8 @@ matmul-times: matmul.x
 
 data: vector-times matmul-times
 
-# el comando no se incluye en el target all porque el server remoto original de trabajo
-# no tiene matplotlib instalado. Se deja como opción para graficar en una máquina con la libreria
 plot: plot.py data
-	python $<
+	python3 $<
 
 execs-clean:
 	rm *.x
