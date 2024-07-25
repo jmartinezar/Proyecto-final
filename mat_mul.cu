@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <iostream>
+#include <chrono>
 #include <cuda_runtime.h>
 
 #define TILE_SIZE 16
@@ -25,13 +27,21 @@ __global__ void matrixMul(const double *A, const double *B, double *C, int width
 	}
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    int width_A = 1000;
-    int high_A = 1000;
-    int width_B = 1000;
-    int high_B = 1000;
-    
+    //int width_A = 10000;
+    //int high_A = 10000;
+    //int width_B = 10000;
+    //int high_B = 10000;
+
+    int size = std::atoi(argv[1]);
+
+    // TODO: rename high -> height
+    int width_A = size;
+    int high_A = size;
+    int width_B = size;
+    int high_B = size;
+
     size_t size_A = width_A * high_A * sizeof(double);
     size_t size_B = width_B * high_B * sizeof(double);
     size_t size_C = width_B * high_A * sizeof(double);
@@ -61,15 +71,26 @@ int main(void)
     dim3 dimBlock(TILE_SIZE, TILE_SIZE);
     dim3 dimGrid((width_B + dimBlock.x - 1) / dimBlock.x, (high_A + dimBlock.y - 1) / dimBlock.y);
 
+    auto start = std::chrono::system_clock::now(); //start time
     matrixMul<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, width_A, high_A, width_B, high_B);
+    cudaDeviceSynchronize();
+    auto end = std::chrono::system_clock::now(); //end time
+
+    std::chrono::duration<double> elapsed_seconds = end-start;
+
+    // Total time
+    double wtime = elapsed_seconds.count();
 
     cudaMemcpy(h_C, d_C, size_C, cudaMemcpyDeviceToHost);
 
     for (int i = 0; i < 10; i++)
     {
-        printf("C[%d] = %f\n", i*width_B+1, h_C[i*width_B+1]);
+        fprintf(stderr,"C[%d] = %f\n", i*width_B+1, h_C[i*width_B+1]);
     }
 
+    // Prints size and elapsed time in matrix multiplication
+    std::cout << size << "\t" << wtime << std::endl;
+    
     cudaFree(d_A);
     cudaFree(d_B);
     cudaFree(d_C);
