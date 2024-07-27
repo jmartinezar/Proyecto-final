@@ -40,7 +40,7 @@ $(TMP)/matmul.tmp: matmul.x
 plot: plot.py 
 	python3 $<
 	@echo "-------------------------------------------------"
-	@echo "Figures are saved to 'figs' directory.          |\nIf not, check dependencies and logs in terminal.|"
+	@echo "Figures are saved to 'figs' directory.          |"
 	@echo "-------------------------------------------------"
 
 execs-clean:
