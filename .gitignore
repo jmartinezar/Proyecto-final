@@ -8,6 +8,9 @@ logs/*
 # local figures
 figs/*
 !figs/.gitkeep
+# temporal files
+tmp/*
+!tmp/.gitkeep
 
 # executables
 *.x

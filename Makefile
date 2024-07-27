@@ -1,11 +1,13 @@
 COMPILER=nvcc
 DAT=data
 LOG=logs
+TMP=tmp
 SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
 header=size\ttime(s)
 
-all: plot
+all: $(TMP)/vector.tmp $(TMP)/matmul.tmp
+#@echo "\033[38;5;70mData has been created!\n Plot by running 'make plot'\033[0m"
 
 matmul.x: mat_mul.cu
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
@@ -24,17 +26,25 @@ vector: vector.x
 vector-times: vector.x
 	@echo "     \033[1;38;5;214mVECTOR\033[0m\n$(header)" && for size in $(SIZES); do ./$< $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
 
+$(TMP)/vector.tmp: vector.x
+	@$(MAKE) vector-times
+	@touch $@
+
 matmul-times: matmul.x
 	@echo "     \033[1;38;5;214mMATMUL\033[0m\n$(header)" && for size in $(SIZES); do ./$< $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
 
-data: vector-times matmul-times
+$(TMP)/matmul.tmp: matmul.x
+	@$(MAKE) matmul-times
+	@touch $@
 
-plot: plot.py data
+plot: plot.py 
 	python3 $<
-	@echo "->\033[1;38;5;70mFigures should be created in figs/, if not, check logs from python3 execution.\033[0m"
+	@echo "-------------------------------------------------"
+	@echo "Figures are saved to 'figs' directory.          |\nIf not, check dependencies and logs in terminal.|"
+	@echo "-------------------------------------------------"
 
 execs-clean:
 	rm *.x
 
 clean:
-	rm figs/*.pdf data/*.txt logs/*.log *.x
+	rm figs/*.pdf $/*.txt logs/*.log  *.x
