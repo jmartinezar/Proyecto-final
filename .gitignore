@@ -8,6 +8,7 @@ logs/*
 # local figures
 figs/*
 !figs/.gitkeep
+!figs/aux
 # temporal files
 tmp/*
 !tmp/.gitkeep
