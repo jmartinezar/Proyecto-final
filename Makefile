@@ -1,7 +1,13 @@
+.PHONY: report
+
 COMPILER=nvcc
 DAT=data
 LOG=logs
 TMP=tmp
+REP=report
+# vector times plot seems to representate random data, this may be due to the current range of 
+# size and the complexity of vector-sum opperation. This range need to be checked
+
 SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
 header=size\ttime(s)
@@ -37,14 +43,17 @@ $(TMP)/matmul.tmp: matmul.x
 	@$(MAKE) -s matmul-times
 	@touch $@
 
-plot: plot.py 
+plot: plot.py
 	python3 $<
 	@echo "-------------------------------------------------"
 	@echo "Figures are saved to 'figs' directory.          |"
 	@echo "-------------------------------------------------"
 
+report:
+	pdflatex --interaction=batchmode -output-directory=$(REP)/ Entrega-1_PF-HPC-G3.tex
+
 execs-clean:
 	rm *.x
 
 clean:
-	rm figs/*.pdf $/*.txt logs/*.log  *.x
+	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* *.x

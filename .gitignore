@@ -11,6 +11,9 @@ figs/*
 # temporal files
 tmp/*
 !tmp/.gitkeep
+# report
+report/*
+!report/.gitkeep
 
 # executables
 *.x
