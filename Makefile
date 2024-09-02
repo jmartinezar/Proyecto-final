@@ -16,6 +16,9 @@ SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
 header=size\ttime(s)
 
+GPU_DIR=GPU
+CPU_DIR=CPU
+
 # Imprimir el valor de TYPE antes de los ifs
 $(info TYPE is $(TYPE))
 
@@ -26,41 +29,32 @@ prepare:
 all: $(TMP)/vector.tmp $(TMP)/matmul.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
+# GPU compilation
+$(GPU_DIR)/matmul.x: $(GPU_DIR)/mat_mul.cu
+ifneq ($(filter gpu both,$(TYPE)),)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
+endif
 
-	ifeq ($(TYPE), cpu)
-	matmul_cpu.x: CPU/mat_mul.cpp
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+$(GPU_DIR)/vector.x: $(GPU_DIR)/vector.cu
+ifneq ($(filter gpu both,$(TYPE)),)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
+endif
 
-	vector_cpu.x: CPU/vector.cpp
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
-	else ifeq ($(TYPE), gpu)
-	matmul_gpu.x: GPU/mat_mul.cu
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CUDA) $< -o $@
+# CPU compilation
+$(CPU_DIR)/matmul.x: $(CPU_DIR)/mat_mul.cpp
+ifneq ($(filter cpu both,$(TYPE)),)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+endif
 
-	vector_gpu.x: GPU/vector.cu
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CUDA) $< -o $@
+$(CPU_DIR)/vector.x: $(CPU_DIR)/vector.cpp
+ifneq ($(filter cpu both,$(TYPE)),)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+endif
 
-	else ifeq ($(TYPE), both)
-	matmul_cpu.x: CPU/mat_mul.cpp
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
-
-	matmul_gpu.x: GPU/mat_mul.cu
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CUDA) $< -o $@
-
-	vector_cpu.x: CPU/vector.cpp
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
-
-	vector_gpu.x: GPU/vector.cu
-		@echo "\n\033[1;38;5mCompiling $< \033[0m"
-		$(COMPILER_CUDA) $< -o $@
-	endif
 
 # vector-times: vector.x
 # 	@echo "     \033[1;38;5;214mVECTOR\033[0m\n$(header)" && for size in $(SIZES); do ./$< $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
