@@ -88,12 +88,12 @@ ifneq ($(filter cpu both,$(TYPE)),)
 	for size in $(SIZES); do ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
 endif
 
-# matmul-times:
-# ifneq ($(filter gpu both,$(TYPE)),)
-# 	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header)" && \
-# 	for size in $(SIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
-# endif
-# ifneq ($(filter cpu both,$(TYPE)),)
-# 	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
-# 	for size in $(SIZES); do ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
-# endif
+matmul-times:
+ifneq ($(filter gpu both,$(TYPE)),)
+	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
+endif
+ifneq ($(filter cpu both,$(TYPE)),)
+	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+endif
