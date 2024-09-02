@@ -55,32 +55,12 @@ ifneq ($(filter cpu both,$(TYPE)),)
 	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
 endif
 
-
-# vector-times: vector.x
-# 	@echo "     \033[1;38;5;214mVECTOR\033[0m\n$(header)" && for size in $(SIZES); do ./$< $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
-
-# $(TMP)/vector.tmp: vector.x
-# 	@$(MAKE) -s vector-times
-# 	@touch $@
-
-# matmul-times: matmul.x
-# 	@echo "     \033[1;38;5;214mMATMUL\033[0m\n$(header)" && for size in $(SIZES); do ./$< $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
-
-# $(TMP)/matmul.tmp: matmul.x
-# 	@$(MAKE) -s matmul-times
-# 	@touch $@
-
-# plot: plot.py
-# 	python3 $<
-# 	@echo "-------------------------------------------------"
-# 	@echo "Figures are saved to 'figs' directory.          |"
-# 	@echo "-------------------------------------------------"
-
-# report:
-# 	pdflatex --interaction=batchmode -output-directory=$(REP)/ Entrega-1_PF-HPC-G3.tex
-
-# execs-clean:
-# 	rm *.x
-
-# clean:
-# 	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* *.x
+vector-times:
+ifneq ($(filter gpu both,$(TYPE)),)
+	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(GPU_DIR)/vector.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
+endif
+ifneq ($(filter cpu both,$(TYPE)),)
+	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+endif
