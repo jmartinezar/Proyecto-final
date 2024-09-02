@@ -62,21 +62,21 @@ endif
 
 # Reglas para generar archivos temporales
 $(TMP)/vector.tmp: $(GPU_DIR)/vector.x $(CPU_DIR)/vector.x | $(TMP)
-ifneq ($(filter gpu both,$(TYPE)),)
 	@$(MAKE) vector-times
-endif
-ifneq ($(filter cpu both,$(TYPE)),)
-	@$(MAKE) vector-times
-endif
+# ifneq ($(filter gpu both,$(TYPE)),)
+# endif
+# ifneq ($(filter cpu both,$(TYPE)),)
+# 	@$(MAKE) vector-times
+# endif
 	@touch $@
 
 $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
-ifneq ($(filter gpu both,$(TYPE)),)
 	@$(MAKE) matmul-times
-endif
-ifneq ($(filter cpu both,$(TYPE)),)
-	@$(MAKE) matmul-times
-endif
+# ifneq ($(filter gpu both,$(TYPE)),)
+# endif
+# ifneq ($(filter cpu both,$(TYPE)),)
+# 	@$(MAKE) matmul-times
+# endif
 	@touch $@
 
 vector-times:
