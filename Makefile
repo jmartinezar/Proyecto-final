@@ -2,7 +2,7 @@
 
 COMPILER_CUDA=nvcc
 COMPILER_CPP=g++
-CXXFLAGS_CPP=-I/usr/include/eigen3 -O2
+CXXFLAGS_CPP=I$(HOME)/eigen-3.4.0 -O2
 DAT=data
 LOG=logs
 TMP=tmp
