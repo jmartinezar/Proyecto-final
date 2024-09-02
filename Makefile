@@ -61,12 +61,12 @@ endif
 
 # Reglas para generar archivos temporales
 $(TMP)/vector.tmp: $(GPU_DIR)/vector.x $(CPU_DIR)/vector.x | $(TMP)
-@$(MAKE) vector-times
-@touch $@
+	@$(MAKE) vector-times
+	@touch $@
 
 $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
-@$(MAKE) matmul-times
-@touch $@
+	@$(MAKE) matmul-times
+	@touch $@
 
 vector-times:
 ifneq ($(filter gpu both,$(TYPE)),)
