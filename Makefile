@@ -14,9 +14,10 @@ TYPE ?= gpu
 
 SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
-
-
 header=size\ttime(s)
+
+# Imprimir el valor de TYPE antes de los ifs
+$(info TYPE is $(TYPE))
 
 # Verificar y crear directorios necesarios
 prepare:
@@ -24,6 +25,7 @@ prepare:
 
 all: $(TMP)/vector.tmp $(TMP)/matmul.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
+
 
 	ifeq ($(TYPE), cpu)
 	matmul_cpu.x: CPU/mat_mul.cpp
