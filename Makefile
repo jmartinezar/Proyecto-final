@@ -2,7 +2,7 @@
 
 COMPILER_CUDA=nvcc
 COMPILER_CPP=g++
-CXXFLAGS_CPP=-I$(HOME)/eigen-3.4.0 -O2
+CXXFLAGS_CPP=-I/usr/include/eigen3 -O2
 DAT=data
 LOG=logs
 TMP=tmp
@@ -12,7 +12,7 @@ REP=report
 
 TYPE ?= gpu
 
-SIZES=10 100 500 1000 5000
+SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 
 header=size\ttime(s)
 
@@ -61,12 +61,12 @@ endif
 
 # Reglas para generar archivos temporales
 $(TMP)/vector.tmp: $(GPU_DIR)/vector.x $(CPU_DIR)/vector.x | $(TMP)
-	@$(MAKE) vector-times
-	@touch $@
+@$(MAKE) vector-times
+@touch $@
 
 $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
-	@$(MAKE) matmul-times
-	@touch $@
+@$(MAKE) matmul-times
+@touch $@
 
 vector-times:
 ifneq ($(filter gpu both,$(TYPE)),)
