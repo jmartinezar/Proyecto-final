@@ -100,14 +100,14 @@ ifneq ($(filter cpu,$(TYPE)),)
 endif
 
 
-# plot: plot.py
-# 	python3 $<
-# 	@echo "-------------------------------------------------"
-# 	@echo "Figures are saved to 'figs' directory.          |"
-# 	@echo "-------------------------------------------------"
+plot: plot.py
+	python3 $<
+	@echo "-------------------------------------------------"
+	@echo "Figures are saved to 'figs' directory.          |"
+	@echo "-------------------------------------------------"
 
-# report:
-# 	pdflatex --interaction=batchmode -output-directory=$(REP)/ Entrega-1_PF-HPC-G3.tex
+report:
+	pdflatex --interaction=batchmode -output-directory=$(REP)/ Entrega-1_PF-HPC-G3.tex
 
 execs-clean:
 	rm **/*.x
