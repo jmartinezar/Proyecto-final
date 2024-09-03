@@ -17,8 +17,8 @@ logcolor = '#B30000'
 
 fig, ax = plt.subplots(sharex = True, figsize = (6,5))
 fig.suptitle(f"{upperType} matrix multiplication time scaling using {library}", fontweight="bold", fontsize=13)
-fig.supxlabel("Matrix size", size=13)
 
+ax.set_xlabel("Matrix size", size=13)
 ax.set_ylabel(f'{upperType} wall time [s]', size=13, color = nologcolor)
 # ax.set_xscale('log')
 ax.plot(data_matmul[:,0], data_matmul[:,1], marker = '*', ms = 9, mfc = 'none', mew = 1.0, lw = 1.2, c = nologcolor)
