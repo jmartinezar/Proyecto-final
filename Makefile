@@ -110,7 +110,7 @@ endif
 # 	pdflatex --interaction=batchmode -output-directory=$(REP)/ Entrega-1_PF-HPC-G3.tex
 
 execs-clean:
-	rm *.x
+	rm **/*.x
 
 clean:
-	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* *.x
+	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* **/*.x
