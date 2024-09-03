@@ -100,8 +100,8 @@ ifneq ($(filter cpu,$(TYPE)),)
 endif
 
 
-plot: plot.py ${TYPE}
-	python3 $<
+plot: plot.py 
+	python3 $< ${TYPE}
 	@echo "-------------------------------------------------"
 	@echo "Figures are saved to 'figs' directory.          |"
 	@echo "-------------------------------------------------"
