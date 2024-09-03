@@ -12,8 +12,8 @@ REP=report
 # size and the complexity of vector-sum opperation. This range need to be checked
 
 
-# SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
-SIZES=10 100 500 1000 5000
+SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
+# SIZES=10 100 500 1000 5000
 
 header=size\ttime(s)
 
