@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 # --------------------- Read data ----------------------
-data_vector = np.loadtxt('data/vector-times.txt')
-data_matmul = np.loadtxt('data/matmul-times.txt')
+TYPE = sys.argv[1].strip().lower()
+data_vector = np.loadtxt(f'data/{TYPE}_vector-times.txt')
+data_matmul = np.loadtxt(f'data/{TYPE}_matmul-times.txt')
 
 # ---------------------- Plotting ----------------------
 # matmul
