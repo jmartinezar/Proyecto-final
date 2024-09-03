@@ -44,7 +44,7 @@ ax2.set_xlabel('Vector size (logscale)', size=13, color = '#f4a40a')
 ax2.set_xscale('log')
 ax2.plot(data_vector[:,0], data_vector[:,1], marker = 'o', color = '#f4a40a')
 plt.tight_layout()
-plt.savefig("figs/vector-strong.png")
+plt.savefig(f"figs/{upperType}vector-strong.png")
 
 # plot both at once (not useful in server)
 # plt.show()
