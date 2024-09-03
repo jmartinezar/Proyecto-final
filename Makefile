@@ -37,66 +37,66 @@ all: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
 # Reglas de compilación para GPU
 $(GPU_DIR)/matmul.x: $(GPU_DIR)/mat_mul.cu | $(TMP)
 ifneq ($(filter gpu,$(TYPE)),)
-    @echo "\n\033[1;38;5mCompiling $< \033[0m"
-    $(COMPILER_CUDA) $< -o $@
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
 endif
 
 $(GPU_DIR)/vector.x: $(GPU_DIR)/vector.cu | $(TMP)
 ifneq ($(filter gpu,$(TYPE)),)
-    @echo "\n\033[1;38;5mCompiling $< \033[0m"
-    $(COMPILER_CUDA) $< -o $@
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
 endif
 
 # Reglas de compilación para CPU
 $(CPU_DIR)/matmul.x: $(CPU_DIR)/mat_mul.cpp | $(TMP)
 ifneq ($(filter cpu,$(TYPE)),)
-    @echo "\n\033[1;38;5mCompiling $< \033[0m"
-    $(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
 endif
 
 $(CPU_DIR)/vector.x: $(CPU_DIR)/vector.cpp | $(TMP)
 ifneq ($(filter cpu,$(TYPE)),)
-    @echo "\n\033[1;38;5mCompiling $< \033[0m"
-    $(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
 endif
 
 # Reglas para generar archivos temporales
 $(TMP)/$(TYPE)vector.tmp: $(GPU_DIR)/vector.x $(CPU_DIR)/vector.x | $(TMP)
 ifneq ($(filter gpu,$(TYPE)),)
-    @$(MAKE) vector-times
+	@$(MAKE) vector-times
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-    @$(MAKE) vector-times
+	@$(MAKE) vector-times
 endif
-    @touch $@
+	@touch $@
 
 $(TMP)/$(TYPE)matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
 ifneq ($(filter gpu,$(TYPE)),)
-    @$(MAKE) matmul-times
+	@$(MAKE) matmul-times
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-    @$(MAKE) matmul-times
+	@$(MAKE) matmul-times
 endif
-    @touch $@
+	@touch $@
 
 vector-times:
 ifneq ($(filter gpu,$(TYPE)),)
-    @echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(header)" && \
-    for size in $(SIZES); do ./$(GPU_DIR)/vector.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
+	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(GPU_DIR)/vector.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-    @echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(header)" && \
-    for size in $(SIZES); do ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
 endif
 
 matmul-times:
 ifneq ($(filter gpu,$(TYPE)),)
-    @echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header)" && \
-    for size in $(SIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
+	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-    @echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
-    for size in $(SIZES); do ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
+	for size in $(SIZES); do ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
 endif
 
 
