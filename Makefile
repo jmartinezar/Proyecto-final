@@ -172,3 +172,5 @@ matmul-times-weak:
 	    time=$$(./$(WEAK_DIR)/matmul.x $$size $$scale_factor 2>$(LOG)/gpu_matmul.log); \
 	    echo "$$size\t$$scale_factor\t$$time"; \
 	done | tee $(DAT)/gpu_matmul-times-weak.txt
+
+######################################################################################################
