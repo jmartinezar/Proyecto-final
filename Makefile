@@ -31,6 +31,8 @@ $(DAT):
 $(LOG):
 	mkdir -p $(LOG)
 
+
+
 all: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
@@ -114,3 +116,56 @@ execs-clean:
 
 clean:
 	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* **/*.x
+
+
+
+
+
+
+##############################################################################################################
+## Ragla para ejecutar Weak Sacling
+weak-scaling: $(TMP)/weak-scalingvector.tmp
+	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
+
+WEAK_DIR=GPU_weakScaling
+# Reglas de compilación para GPU Weak Sacling
+$(WEAK_DIR)/matmul.x: $(WEAK_DIR)/mat_mul.cu | $(TMP)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
+
+$(WEAK_DIR)/vector.x: $(WEAK_DIR)/vector.cu | $(TMP)
+	@echo "\n\033[1;38;5mCompiling $< \033[0m"
+	$(COMPILER_CUDA) $< -o $@
+
+# Reglas para generar archivos temporales GPU Weak Sacling
+$(TMP)/weak-scalingvector.tmp: $(WEAK_DIR)/vector.x | $(TMP)
+	@$(MAKE) vector-times-weak
+	@touch $@
+
+$(TMP)/weak-scalingmatmul.tmp: $(WEAK_DIR)/matmul.x | $(TMP)
+	@$(MAKE) matmul-times-weak
+	@touch $@
+
+# Define the size and scale_factor parameters in a single array
+VECTOR_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
+MATMUL_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
+
+header_weak=scale_factor\ttime
+
+# Rule for executing vector with weak scaling
+vector-times-weak:
+	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(header_weak)" && \
+	for param in $(VECTOR_PARAMS); do \
+	    size=$$(echo $$param | cut -d: -f1); \
+	    scale_factor=$$(echo $$param | cut -d: -f2); \
+	    ./$(WEAK_DIR)/vector.x $$size $$scale_factor 2>$(LOG)/gpu_vector.log; \
+	done | tee $(DAT)/gpu_vector-times-weak.txt
+
+# Rule for executing matmul with weak scaling
+matmul-times-weak:
+	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header_weak)" && \
+	for param in $(MATMUL_PARAMS); do \
+	    size=$$(echo $$param | cut -d: -f1); \
+	    scale_factor=$$(echo $$param | cut -d: -f2); \
+	    ./$(WEAK_DIR)/matmul.x $$size $$scale_factor 2>$(LOG)/gpu_matmul.log; \
+	done | tee $(DAT)/gpu_matmul-times-weak.txt
