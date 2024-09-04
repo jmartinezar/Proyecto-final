@@ -123,12 +123,12 @@ clean:
 
 
 ##############################################################################################################
-## Ragla para ejecutar Weak Sacling
+## Ragla para ejecutar Weak Scaling
 weak-scaling: $(TMP)/weak-scalingvector.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
 WEAK_DIR=GPU_weakScaling
-# Reglas de compilación para GPU Weak Sacling
+# Reglas de compilación para GPU Weak Scaling
 $(WEAK_DIR)/matmul.x: $(WEAK_DIR)/mat_mul.cu | $(TMP)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
 	$(COMPILER_CUDA) $< -o $@
@@ -137,7 +137,7 @@ $(WEAK_DIR)/vector.x: $(WEAK_DIR)/vector.cu | $(TMP)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
 	$(COMPILER_CUDA) $< -o $@
 
-# Reglas para generar archivos temporales GPU Weak Sacling
+# Reglas para generar archivos temporales GPU Weak Scaling
 $(TMP)/weak-scalingvector.tmp: $(WEAK_DIR)/vector.x | $(TMP)
 	@$(MAKE) vector-times-weak
 	@touch $@
@@ -150,7 +150,7 @@ $(TMP)/weak-scalingmatmul.tmp: $(WEAK_DIR)/matmul.x | $(TMP)
 VECTOR_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
 MATMUL_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
 
-header_weak=scale_factor\ttime
+header_weak=size\scale_factor\ttime
 
 # Rule for executing vector with weak scaling
 vector-times-weak:
