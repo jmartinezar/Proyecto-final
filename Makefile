@@ -123,13 +123,12 @@ clean:
 
 
 ##############################################################################################################
-## Regla para ejecutar Weak Scaling
-weak-scaling: $(TMP)/weak-scalingvector.tmp $(TMP)/weak-scalingmatmul.tmp
+## Ragla para ejecutar Weak Sacling
+weak-scaling: $(TMP)/weak-scalingvector.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
 WEAK_DIR=GPU_weakScaling
-
-# Reglas de compilación para GPU Weak Scaling
+# Reglas de compilación para GPU Weak Sacling
 $(WEAK_DIR)/matmul.x: $(WEAK_DIR)/mat_mul.cu | $(TMP)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
 	$(COMPILER_CUDA) $< -o $@
@@ -138,7 +137,7 @@ $(WEAK_DIR)/vector.x: $(WEAK_DIR)/vector.cu | $(TMP)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
 	$(COMPILER_CUDA) $< -o $@
 
-# Reglas para generar archivos temporales GPU Weak Scaling
+# Reglas para generar archivos temporales GPU Weak Sacling
 $(TMP)/weak-scalingvector.tmp: $(WEAK_DIR)/vector.x | $(TMP)
 	@$(MAKE) vector-times-weak
 	@touch $@
