@@ -147,11 +147,11 @@ $(TMP)/weak-scalingmatmul.tmp: $(WEAK_DIR)/matmul.x | $(TMP)
 	@$(MAKE) matmul-times-weak
 	@touch $@
 
-# Define the size and scale_factor parameters in una single array
+# Define the size and scale_factor parameters in a single array
 VECTOR_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
 MATMUL_PARAMS := 100:1 100:2 100:4 100:8 100:16 500:1 500:2 500:4 500:8 500:16
 
-header_weak=size\tscale_factor\ttime
+header_weak=scale_factor\ttime
 
 # Rule for executing vector with weak scaling
 vector-times-weak:
@@ -159,7 +159,7 @@ vector-times-weak:
 	for param in $(VECTOR_PARAMS); do \
 	    size=$$(echo $$param | cut -d: -f1); \
 	    scale_factor=$$(echo $$param | cut -d: -f2); \
-	    ./$(WEAK_DIR)/vector.x $$size $$scale_factor 2>$(LOG)/gpu_vector.log | awk -v s="$$size" -v sf="$$scale_factor" '{print s "\t" sf "\t" $$0}'; \
+	    ./$(WEAK_DIR)/vector.x $$size $$scale_factor 2>$(LOG)/gpu_vector.log; \
 	done | tee $(DAT)/gpu_vector-times-weak.txt
 
 # Rule for executing matmul with weak scaling
@@ -168,7 +168,7 @@ matmul-times-weak:
 	for param in $(MATMUL_PARAMS); do \
 	    size=$$(echo $$param | cut -d: -f1); \
 	    scale_factor=$$(echo $$param | cut -d: -f2); \
-	    ./$(WEAK_DIR)/matmul.x $$size $$scale_factor 2>$(LOG)/gpu_matmul.log | awk -v s="$$size" -v sf="$$scale_factor" '{print s "\t" sf "\t" $$0}'; \
+	    ./$(WEAK_DIR)/matmul.x $$size $$scale_factor 2>$(LOG)/gpu_matmul.log; \
 	done | tee $(DAT)/gpu_matmul-times-weak.txt
 
 ######################################################################################################
