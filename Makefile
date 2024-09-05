@@ -45,9 +45,6 @@ all:
 
 exec: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
 
-all: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
-	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
-
 # Reglas de compilación para GPU
 $(GPU_DIR)/matmul.x: $(GPU_DIR)/mat_mul.cu | $(TMP)
 ifneq ($(filter gpu,$(TYPE)),)
