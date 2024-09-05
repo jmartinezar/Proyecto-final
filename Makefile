@@ -37,10 +37,6 @@ $(DAT):
 $(LOG):
 	mkdir -p $(LOG)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> c1f40139af0fee0c55939739b4b0eada41d835ca
 all:
 	$(info TYPE is $(TYPE))
 	@$(MAKE) exec TYPE=gpu
@@ -48,14 +44,8 @@ all:
 	@$(MAKE) exec TYPE=cpu
 
 exec: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
-<<<<<<< HEAD
-=======
-
 
 all: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
->>>>>>> c0d8e0ce6002f9959421e177a627a896329630a9
-=======
->>>>>>> c1f40139af0fee0c55939739b4b0eada41d835ca
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
 # Reglas de compilación para GPU
@@ -142,16 +132,6 @@ execs-clean:
 
 clean:
 	rm figs/* $(DAT)/* $(LOG)/* $(TMP)/* $(REP)/* **/*.x
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> c1f40139af0fee0c55939739b4b0eada41d835ca
-
-
-
-
-
 
 ##############################################################################################################
 ## Regla para ejecutar Weak Scaling
@@ -205,7 +185,3 @@ matmul-times-weak:
 	done | tee $(DAT)/gpu_matmul-times-weak.txt
 
 ######################################################################################################
-<<<<<<< HEAD
->>>>>>> c0d8e0ce6002f9959421e177a627a896329630a9
-=======
->>>>>>> c1f40139af0fee0c55939739b4b0eada41d835ca
