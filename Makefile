@@ -38,7 +38,7 @@ $(LOG):
 	mkdir -p $(LOG)
 
 
-all: $(TMP)/cpuvector.tmp $(TMP)/cpumatmul.tmp $(TMP)/gpuvector.tmp $(TMP)/gpumatmul.tmp
+all: $(TMP)/vector.tmp $(TMP)/matmul.tmp
 
 # compilacion de matmul GPU
 $(GPU_DIR)/matmul.x: $(GPU_DIR)/mat_mul.cu | $(TMP)
