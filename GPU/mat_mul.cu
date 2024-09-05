@@ -3,8 +3,6 @@
 #include <chrono>
 #include <cuda_runtime.h>
 
-#define TILE_SIZE 16
-
 __global__ void matrixMul(const double *A, const double *B, double *C, int width_A, int high_A, int width_B, int high_B)
 {
 	if(width_A != high_B)
@@ -29,12 +27,13 @@ __global__ void matrixMul(const double *A, const double *B, double *C, int width
 
 int main(int argc, char *argv[])
 {
-    //int width_A = 10000;
-    //int high_A = 10000;
-    //int width_B = 10000;
-    //int high_B = 10000;
+    if (argc < 3) {
+        std::cerr << "Uso de: " << argv[0] << " <matrix_size> <tile_size>" << std::endl;
+        return 1;
+    }
 
     int size = std::atoi(argv[1]);
+    int numberOfThreads = std::atoi(argv[2]);
 
     // TODO: rename high -> height
     int width_A = size;
@@ -68,7 +67,7 @@ int main(int argc, char *argv[])
     cudaMemcpy(d_A, h_A, size_A, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, size_B, cudaMemcpyHostToDevice);
 
-    dim3 dimBlock(TILE_SIZE, TILE_SIZE);
+    dim3 dimBlock(numberOfThreads, numberOfThreads);
     dim3 dimGrid((width_B + dimBlock.x - 1) / dimBlock.x, (high_A + dimBlock.y - 1) / dimBlock.y);
 
     auto start = std::chrono::system_clock::now(); //start time

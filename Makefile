@@ -15,9 +15,11 @@ REP=report
 
 MSIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
 VSIZES=1000 10000 1000000 10000000 100000000 500000000
-THREADS=1 2 4 8 16 32 40 48 56 64
+THREADS=8 16 32 64 128 256 512 1024
 # SIZES=10 100 500 1000 5000
 
+
+numthreads=256
 mweaksize=20000
 vweaksize=10000000
 headers=size\ttime(s)
@@ -76,7 +78,9 @@ $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
 
 vector-times-gpu:
 	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(headers)" && \
-	for size in $(VSIZES); do ./$(GPU_DIR)/vector.x $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
+	for size in $(VSIZES); do ./$(GPU_DIR)/vector.x $$size $(numthreads) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/strong-$@.txt
+	@echo "                    \n$(headerw)" && \
+	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/vector.x $(vweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
 
 vector-times-cpu:
 	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(headers)" && \
@@ -86,7 +90,9 @@ vector-times-cpu:
 
 matmul-times-gpu:
 	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(headers)" && \
-	for size in $(MSIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/$@.log; done | tee $(DAT)/$@.txt
+	for size in $(MSIZES); do ./$(GPU_DIR)/matmul.x $$size $(numthreads) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/strong-$@.txt
+	@echo "                    \n$(headerw)" && \
+	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(CPU_DIR)/matmul.x $(mweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
 
 matmul-times-cpu:
 	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(headers)" && \
