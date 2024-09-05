@@ -13,9 +13,12 @@ REP=report
 
 
 SIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
+THREADS=1 2 4 8 16 32 40 48 56 64
 # SIZES=10 100 500 1000 5000
 
-header=size\ttime(s)
+weaksize=20000
+headers=size\ttime(s)
+headerw=threads\tsize\ttime(s)
 
 GPU_DIR=GPU
 CPU_DIR=CPU
@@ -51,13 +54,13 @@ endif
 $(CPU_DIR)/matmul.x: $(CPU_DIR)/mat_mul.cpp | $(TMP)
 ifneq ($(filter cpu,$(TYPE)),)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
-	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -fopenmp -o $@
 endif
 
 $(CPU_DIR)/vector.x: $(CPU_DIR)/vector.cpp | $(TMP)
 ifneq ($(filter cpu,$(TYPE)),)
 	@echo "\n\033[1;38;5mCompiling $< \033[0m"
-	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -o $@
+	$(COMPILER_CPP) $(CXXFLAGS_CPP) $< -fopenmp -o $@
 endif
 
 # Reglas para generar archivos temporales
@@ -81,12 +84,14 @@ endif
 
 vector-times:
 ifneq ($(filter gpu,$(TYPE)),)
-	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(header)" && \
+	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(headers)" && \
 	for size in $(SIZES); do ./$(GPU_DIR)/vector.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(header)" && \
-	for size in $(SIZES); do ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(headers)" && \
+	for size in $(SIZES); do OMP_NUM_THREADS=32 ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/strong_cpu_$@.txt
+	@echo "                    \n$(headerw)" && \
+	for thread in $(THREADS); do echo -n "$$thread\t" && OMP_NUM_THREADS=$$thread ./$(CPU_DIR)/vector.x $(weaksize) 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/weak_cpu_$@.txt
 endif
 
 matmul-times:
@@ -96,7 +101,9 @@ ifneq ($(filter gpu,$(TYPE)),)
 endif
 ifneq ($(filter cpu,$(TYPE)),)
 	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
-	for size in $(SIZES); do ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/cpu_$@.txt
+	for size in $(SIZES); do OMP_NUM_THREADS=32 ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/strong_cpu_$@.txt
+	@echo "                    \n$(headerw)" && \
+	for thread in $(THREADS); do echo -n "$$thread\t" && OMP_NUM_THREADS=$$thread ./$(CPU_DIR)/matmul.x $(weaksize) 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/weak_cpu_$@.txt
 endif
 
 
