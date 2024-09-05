@@ -62,16 +62,16 @@ $(CPU_DIR)/vector.x: $(CPU_DIR)/vector.cpp | $(TMP)
 
 $(TMP)/vector.tmp: $(GPU_DIR)/vector.x $(CPU_DIR)/vector.x | $(TMP)
 	@echo "\n\033[1;38;5mExecuting $(GPU_DIR)/vector.x \033[0m"
-	./$(GPU_DIR)/vector.x
+	@$(MAKE) vector-times-gpu
 	@echo "\n\033[1;38;5mExecuting $(CPU_DIR)/vector.x \033[0m"
-	./$(CPU_DIR)/vector.x
+	@$(MAKE) vector-times-cpu
 	@touch $@
 
 $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
 	@echo "\n\033[1;38;5mExecuting $(GPU_DIR)/matmul.x \033[0m"
-	./$(GPU_DIR)/matmul.x
+	@$(MAKE) matmul-times-gpu
 	@echo "\n\033[1;38;5mExecuting $(CPU_DIR)/matmul.x \033[0m"
-	./$(CPU_DIR)/matmul.x
+	@$(MAKE) matmul-times-cpu
 	@touch $@
 
 vector-times-gpu:
