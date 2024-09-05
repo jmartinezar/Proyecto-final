@@ -1,4 +1,5 @@
 .PHONY: report
+.DEFAULT_GOAL := all
 
 TYPE ?= gpu
 COMPILER_CUDA=nvcc
@@ -24,7 +25,7 @@ GPU_DIR=GPU
 CPU_DIR=CPU
 
 # Imprimir el valor de TYPE antes de los ifs
-$(info TYPE is $(TYPE))
+# $(info TYPE is $(TYPE))
 
 # Asegúrate de que los directorios existan
 $(TMP):
@@ -34,7 +35,13 @@ $(DAT):
 $(LOG):
 	mkdir -p $(LOG)
 
-all: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
+all:
+	$(info TYPE is $(TYPE))
+	@$(MAKE) exec TYPE=gpu
+	$(info TYPE is $(TYPE))
+	@$(MAKE) exec TYPE=cpu
+
+exec: $(TMP)/$(TYPE)vector.tmp $(TMP)/$(TYPE)matmul.tmp
 	@echo "\033[38;5;70m\nData has been created!\nPlot by running 'make plot'\033[0m\n"
 
 # Reglas de compilación para GPU
@@ -96,11 +103,11 @@ endif
 
 matmul-times:
 ifneq ($(filter gpu,$(TYPE)),)
-	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(header)" && \
+	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(headers)" && \
 	for size in $(SIZES); do ./$(GPU_DIR)/matmul.x $$size 2>$(LOG)/gpu_$@.log; done | tee $(DAT)/gpu_$@.txt
 endif
 ifneq ($(filter cpu,$(TYPE)),)
-	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(header)" && \
+	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(headers)" && \
 	for size in $(SIZES); do OMP_NUM_THREADS=32 ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/strong_cpu_$@.txt
 	@echo "                    \n$(headerw)" && \
 	for thread in $(THREADS); do echo -n "$$thread\t" && OMP_NUM_THREADS=$$thread ./$(CPU_DIR)/matmul.x $(weaksize) 2>$(LOG)/cpu_$@.log; done | tee $(DAT)/weak_cpu_$@.txt
