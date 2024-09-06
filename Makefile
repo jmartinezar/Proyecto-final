@@ -16,8 +16,7 @@ THREADS=1 2 4 8 14 16 22 28 32 40 48 56 64
 
 numthreads=32
 mstrongsize=10000
-vstrongsize=10000000
-headerw=size\ttime(s)
+vstrongsize=100000000
 headers=threads\tsize\ttime(s)
 
 GPU_DIR=GPU
@@ -72,32 +71,32 @@ $(TMP)/matmul.tmp: $(GPU_DIR)/matmul.x $(CPU_DIR)/matmul.x | $(TMP)
 	@touch $@
 
 vector-times-gpu:
-	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(headerw)" && \
-	for size in $(VSIZES); do ./$(GPU_DIR)/vector.x $$size $(numthreads) 2>$(LOG)/weak-$@.log; done | tee $(DAT)/raw/weak-$@.txt
+	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n" && \
+	bash weak_vec.sh
 	@echo "                    \n$(headers)" && \
 	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/vector.x $(vstrongsize) $$thread 2>$(LOG)/strong-$@.log; done | tee $(DAT)/raw/strong-$@.txt
 	LC_NUMERIC=$(OUTF) awk 'FNR == 1 {val=$$3} {print $$1, $$3, val/$$3, val/$$3/$$1}' $(DAT)/raw/strong-$@.txt > $(DAT)/metrics/strong-$@-metrics.txt
 
 vector-times-cpu:
-	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(headerw)" && \
-	for size in $(VSIZES); do OMP_NUM_THREADS=$(numthreads) ./$(CPU_DIR)/vector.x $$size 2>$(LOG)/weak-$@.log; done | tee $(DAT)/raw/weak-$@.txt
+	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n" && \
+	bash weak_vec_cpu.sh
 	@echo "                    \n$(headers)" && \
 	for thread in $(THREADS); do echo -n "$$thread\t" && OMP_NUM_THREADS=$$thread ./$(CPU_DIR)/vector.x $(vstrongsize) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/raw/strong-$@.txt
 	LC_NUMERIC=$(OUTF) awk 'FNR == 1 {val=$$3} {print $$1, $$3, val/$$3, val/$$3/$$1}' $(DAT)/raw/strong-$@.txt > $(DAT)/metrics/strong-$@-metrics.txt
 
 matmul-times-gpu:
-	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(headerw)" && \
-	for size in $(MSIZES); do ./$(GPU_DIR)/matmul.x $$size $(numthreads) 2>$(LOG)/weak-$@.log; done | tee $(DAT)/raw/weak-$@.txt
+	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n" && \
+	bash weak_mat.sh
 	@echo "                    \n$(headers)" && \
 	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/matmul.x $(mstrongsize) $$thread 2>$(LOG)/strong-$@.log; done | tee $(DAT)/raw/strong-$@.txt
 	LC_NUMERIC=$(OUTF) awk 'FNR == 1 {val=$$3} {print $$1*$$1, $$3, val/$$3, val/$$3/($$1*$$1)}' $(DAT)/raw/strong-$@.txt > $(DAT)/metrics/strong-$@-metrics.txt
 
 matmul-times-cpu:
-	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(headerw)" && \
-	for size in $(MSIZES); do OMP_NUM_THREADS=$(numthreads) ./$(CPU_DIR)/matmul.x $$size 2>$(LOG)/weak-$@.log; done | tee $(DAT)/raw/weak-$@.txt
+	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n" && \
+	bash weak_mat_cpu.sh
 	@echo "                    \n$(headers)" && \
 	for thread in $(THREADS); do echo -n "$$thread\t" && OMP_NUM_THREADS=$$thread ./$(CPU_DIR)/matmul.x $(mstrongsize) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/raw/strong-$@.txt
-	LC_NUMERIC=$(OUTF) awk 'FNR == 1 {val=$$3} {print $$1*$$1, $$3, val/$$3, val/$$3/($$1*$$1)}' $(DAT)/raw/strong-$@.txt > $(DAT)/metrics/strong-$@-metrics.txt
+	LC_NUMERIC=$(OUTF) awk 'FNR == 1 {val=$$3} {print $$1, $$3, val/$$3, val/$$3/$$1}' $(DAT)/raw/strong-$@.txt > $(DAT)/metrics/strong-$@-metrics.txt
 
 plot: plot.py 
 	python3 $<
