@@ -3,39 +3,50 @@
 #include <chrono>
 #include <cuda_runtime.h>
 
-__global__ void matrixMul(const double *A, const double *B, double *C, int width_A, int high_A, int width_B, int high_B)
+__global__ void matrixMulShared(const double *A, const double *B, double *C, int width_A, int high_A, int width_B, int high_B, int numberOfThreads)
 {
-	if(width_A != high_B)
-	{
-		printf("The size of matrices isn't correct\n");
-		return;
-	}
+    extern __shared__ double sharedMemory[];
+    double* shared_A = sharedMemory;
+    double* shared_B = sharedMemory + numberOfThreads * numberOfThreads;
 
-	int row = blockIdx.y * blockDim.y + threadIdx.y;
-	int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * numberOfThreads + threadIdx.y;
+    int col = blockIdx.x * numberOfThreads + threadIdx.x;
+    double value = 0;
 
-	if (row < high_A && col < width_B)
-	{
-		double value = 0;
-		for (int k = 0; k < width_A; ++k)
-		{
-			value += A[row * width_A + k] * B[k * width_B + col];
-        	}
-		C[row * width_B + col] = value;
-	}
+    for (int m = 0; m < (width_A + numberOfThreads - 1) / numberOfThreads; ++m)
+    {
+        if (m * numberOfThreads + threadIdx.x < width_A && row < high_A)
+            shared_A[threadIdx.y * numberOfThreads + threadIdx.x] = A[row * width_A + m * numberOfThreads + threadIdx.x];
+        else
+            shared_A[threadIdx.y * numberOfThreads + threadIdx.x] = 0.0;
+
+        if (m * numberOfThreads + threadIdx.y < high_B && col < width_B)
+            shared_B[threadIdx.y * numberOfThreads + threadIdx.x] = B[(m * numberOfThreads + threadIdx.y) * width_B + col];
+        else
+            shared_B[threadIdx.y * numberOfThreads + threadIdx.x] = 0.0;
+
+        __syncthreads();
+
+        for (int e = 0; e < numberOfThreads; ++e)
+            value += shared_A[threadIdx.y * numberOfThreads + e] * shared_B[e * numberOfThreads + threadIdx.x];
+
+        __syncthreads();
+    }
+
+    if (row < high_A && col < width_B)
+        C[row * width_B + col] = value;
 }
 
 int main(int argc, char *argv[])
 {
     if (argc < 3) {
-        std::cerr << "Uso de: " << argv[0] << " <matrix_size> <tile_size>" << std::endl;
+        std::cerr << "Uso de: " << argv[0] << " <matrix_size> <number_of_threads>" << std::endl;
         return 1;
     }
 
     int size = std::atoi(argv[1]);
     int numberOfThreads = std::atoi(argv[2]);
 
-    // TODO: rename high -> height
     int width_A = size;
     int high_A = size;
     int width_B = size;
@@ -71,11 +82,11 @@ int main(int argc, char *argv[])
     dim3 dimGrid((width_B + dimBlock.x - 1) / dimBlock.x, (high_A + dimBlock.y - 1) / dimBlock.y);
 
     auto start = std::chrono::system_clock::now(); //start time
-    matrixMul<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, width_A, high_A, width_B, high_B);
+    matrixMulShared<<<dimGrid, dimBlock, 2 * numberOfThreads * numberOfThreads * sizeof(double)>>>(d_A, d_B, d_C, width_A, high_A, width_B, high_B, numberOfThreads);
     cudaDeviceSynchronize();
     auto end = std::chrono::system_clock::now(); //end time
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::chrono::duration<double> elapsed_seconds = end - start;
 
     // Total time
     double wtime = elapsed_seconds.count();
@@ -84,12 +95,12 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < 10; i++)
     {
-        fprintf(stderr,"C[%d] = %f\n", i*width_B+1, h_C[i*width_B+1]);
+        fprintf(stderr, "C[%d] = %f\n", i * width_B + 1, h_C[i * width_B + 1]);
     }
 
     // Prints size and elapsed time in matrix multiplication
     std::cout << size << "\t" << wtime << std::endl;
-    
+
     cudaFree(d_A);
     cudaFree(d_B);
     cudaFree(d_C);

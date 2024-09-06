@@ -17,11 +17,10 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-
     // Size of vectors
     int n = std::atoi(argv[1]);
     int threadsPerBlock = std::atoi(argv[2]);
-    size_t size = n * sizeof(double) * 1000;
+    size_t size = n * sizeof(double);
 
     // Allocate memory for host vectors
     double *h_A = (double *)malloc(size);
@@ -53,7 +52,7 @@ int main(int argc, char *argv[]) {
     cudaDeviceSynchronize();
     auto end = std::chrono::system_clock::now(); //end time
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::chrono::duration<double> elapsed_seconds = end - start;
     // Total time
     double wtime = elapsed_seconds.count();
     
@@ -62,11 +61,11 @@ int main(int argc, char *argv[]) {
 
     // Print a few elements of the result vector
     for (int i = 0; i < 10; i++) {
-      fprintf(stderr,"%f + %f = %f\n", h_A[i], h_B[i], h_C[i]);
+        fprintf(stderr, "%f + %f = %f\n", h_A[i], h_B[i], h_C[i]);
     }
 
     // Prints size and elapsed time in vector addition
-    std::cout << size << "\t" << wtime << std::endl;
+    std::cout << "Vector size: " << n << ", Threads per block: " << threadsPerBlock << ", Time: " << wtime << " seconds" << std::endl;
     
     // Free device memory
     cudaFree(d_A);
