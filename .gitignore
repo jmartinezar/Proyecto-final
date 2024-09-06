@@ -19,7 +19,7 @@ tmp/*
 !tmp/.gitkeep
 
 # report
-report/*
+report
 IEEEtran.cls
 
 # executables
