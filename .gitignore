@@ -1,17 +1,23 @@
 # those are ignored to avoid data overwriting when pushing from remote to local
 # local data
-data/*
-!data/.gitkeep
+data/raw/*
+data/metrics/*
+!data/raw/.gitkeep
+!data/metrics/.gitkeep
+
 # local logs
 logs/*
 !logs/.gitkeep
+
 # local figures
 figs/*
 !figs/.gitkeep
 !figs/aux
+
 # temporal files
 tmp/*
 !tmp/.gitkeep
+
 # report
 report/*
 !report/.gitkeep
