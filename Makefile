@@ -13,7 +13,7 @@ REP=report
 # size and the complexity of vector-sum opperation. This range need to be checked
 
 
-MSIZES=10 100 500 1000 5000 10000 15000 20000 25000 29000
+MSIZES=10 100 1000 10000 100000 1000000
 VSIZES=1000 10000 1000000 10000000 100000000 500000000
 THREADS=8 16 32 64 128 256 512 1024
 # SIZES=10 100 500 1000 5000
@@ -92,7 +92,7 @@ matmul-times-gpu:
 	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(headers)" && \
 	for size in $(MSIZES); do ./$(GPU_DIR)/matmul.x $$size $(numthreads) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/strong-$@.txt
 	@echo "                    \n$(headerw)" && \
-	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(CPU_DIR)/matmul.x $(mweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
+	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/matmul.x $(mweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
 
 matmul-times-cpu:
 	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(headers)" && \
