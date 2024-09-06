@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     // Size of vectors
     int n = std::atoi(argv[1]);
     int threadsPerBlock = std::atoi(argv[2]);
-    size_t size = n * sizeof(double);
+    size_t size = n * sizeof(double) * 1000;
 
     // Allocate memory for host vectors
     double *h_A = (double *)malloc(size);

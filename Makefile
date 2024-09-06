@@ -80,7 +80,7 @@ vector-times-gpu:
 	@echo "     \033[1;38;5;214mVECTOR (GPU)\033[0m\n$(headers)" && \
 	for size in $(VSIZES); do ./$(GPU_DIR)/vector.x $$size $(numthreads) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/strong-$@.txt
 	@echo "                    \n$(headerw)" && \
-	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/vector.x $(vweaksize)*1000 $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
+	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(GPU_DIR)/vector.x $(vweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
 
 vector-times-cpu:
 	@echo "     \033[1;38;5;214mVECTOR (CPU)\033[0m\n$(headers)" && \
@@ -92,7 +92,7 @@ matmul-times-gpu:
 	@echo "     \033[1;38;5;214mMATMUL (GPU)\033[0m\n$(headers)" && \
 	for size in $(MSIZES); do ./$(GPU_DIR)/matmul.x $$size $(numthreads) 2>$(LOG)/strong-$@.log; done | tee $(DAT)/strong-$@.txt
 	@echo "                    \n$(headerw)" && \
-	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(CPU_DIR)/matmul.x $(mweaksize)*1000 $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
+	for thread in $(THREADS); do echo -n "$$thread\t" && ./$(CPU_DIR)/matmul.x $(mweaksize) $$thread 2>$(LOG)/weak-$@.log; done | tee $(DAT)/weak-$@.txt
 
 matmul-times-cpu:
 	@echo "     \033[1;38;5;214mMATMUL (CPU)\033[0m\n$(headers)" && \

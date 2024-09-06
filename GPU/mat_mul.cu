@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int size = std::atoi(argv[1]);
+    int size = std::atoi(argv[1]) * 1000;
     int numberOfThreads = std::atoi(argv[2]);
 
     // TODO: rename high -> height
