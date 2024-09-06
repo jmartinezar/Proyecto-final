@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <Eigen/Dense>
+// #include <omp.h> // Include OpenMP header
 
 int main(int argc, char *argv[])
 {
@@ -16,11 +17,11 @@ int main(int argc, char *argv[])
     Eigen::MatrixXd matrix_A = Eigen::MatrixXd::Constant(matrix_A_height, matrix_A_width, 1.0); // Matriz A con valores 1.0
     Eigen::MatrixXd matrix_B = Eigen::MatrixXd::Constant(matrix_B_height, matrix_B_width, 2.0); // Matriz B con valores 2.0
     Eigen::MatrixXd result_matrix(matrix_A_height, matrix_B_width); // Matriz C para almacenar el resultado
-
+    
     // Medir el tiempo de ejecución
     auto start_time = std::chrono::system_clock::now(); // inicio del tiempo
 
-    // Multiplicación de matrices usando Eigen
+    // Multiplicación de matrices usando Eigen (Eigen internally parallelizes this)
     result_matrix = matrix_A * matrix_B;
 
     auto end_time = std::chrono::system_clock::now(); // fin del tiempo

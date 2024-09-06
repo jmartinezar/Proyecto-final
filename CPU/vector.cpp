@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <Eigen/Dense>
+#include <omp.h> // Include OpenMP header
 
 int main(int argc, char *argv[]) {
     // Tamaño de los vectores
@@ -12,7 +13,8 @@ int main(int argc, char *argv[]) {
     Eigen::VectorXd host_vector_B(vector_size);
     Eigen::VectorXd host_vector_C(vector_size);
 
-    // Inicializar los vectores en el host
+    // Inicializar los vectores en el host (parallelized with OpenMP)
+    #pragma omp parallel for
     for (int i = 0; i < vector_size; i++) {
         host_vector_A[i] = i;
         host_vector_B[i] = i * 2.0f;
@@ -21,8 +23,11 @@ int main(int argc, char *argv[]) {
     // Medir el tiempo de ejecución
     auto start_time = std::chrono::system_clock::now(); // inicio del tiempo
 
-    // Realizar la suma de vectores utilizando Eigen
-    host_vector_C = host_vector_A + host_vector_B;
+    // Realizar la suma de vectores utilizando Eigen (can be parallelized as well)
+    #pragma omp parallel for
+    for (int i = 0; i < vector_size; i++) {
+        host_vector_C[i] = host_vector_A[i] + host_vector_B[i];
+    }
 
     auto end_time = std::chrono::system_clock::now(); // fin del tiempo
     std::chrono::duration<double> elapsed_time = end_time - start_time;

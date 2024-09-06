@@ -12,9 +12,14 @@ __global__ void vectorAdd(const double *A, const double *B, double *C, int n) {
 }
 
 int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        std::cerr << "Uso de: " << argv[0] << " <vector_size> <threads_per_block>" << std::endl;
+        return 1;
+    }
+
     // Size of vectors
-    // int n = 1000000;
     int n = std::atoi(argv[1]);
+    int threadsPerBlock = std::atoi(argv[2]);
     size_t size = n * sizeof(double);
 
     // Allocate memory for host vectors
@@ -38,9 +43,6 @@ int main(int argc, char *argv[]) {
     cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
 
-    // Number of threads per block
-    int threadsPerBlock = 256;
-
     // Number of blocks in the grid
     int blocksPerGrid = (n + threadsPerBlock - 1) / threadsPerBlock;
 
@@ -50,7 +52,7 @@ int main(int argc, char *argv[]) {
     cudaDeviceSynchronize();
     auto end = std::chrono::system_clock::now(); //end time
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::chrono::duration<double> elapsed_seconds = end - start;
     // Total time
     double wtime = elapsed_seconds.count();
     
@@ -59,7 +61,7 @@ int main(int argc, char *argv[]) {
 
     // Print a few elements of the result vector
     for (int i = 0; i < 10; i++) {
-      fprintf(stderr,"%f + %f = %f\n", h_A[i], h_B[i], h_C[i]);
+        fprintf(stderr, "%f + %f = %f\n", h_A[i], h_B[i], h_C[i]);
     }
 
     // Prints size and elapsed time in vector addition
