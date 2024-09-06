@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Prints size and elapsed time in vector addition
-    std::cout << "Vector size: " << n << ", Threads per block: " << threadsPerBlock << ", Time: " << wtime << " seconds" << std::endl;
+    std::cout << size << "\t" << wtime << std::endl;
     
     // Free device memory
     cudaFree(d_A);
